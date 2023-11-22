@@ -7,6 +7,7 @@ setup(
     entry_points={
         'console_scripts': [
             'shelpy-hi = shelpy.shelpy:hello_world',
+            'range = shelpy.shelpy:_range',
         ]
     }
 )
