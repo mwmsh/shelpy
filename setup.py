@@ -9,6 +9,7 @@ setup(
             'shelpy-hi = shelpy.shelpy:hello_world',
             'range = shelpy.shelpy:_range',
             'map = shelpy.shelpy:_map',
+            'filter = shelpy.shelpy:_filter',
         ]
     }
 )

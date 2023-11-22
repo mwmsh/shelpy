@@ -1,7 +1,9 @@
+import os
 import sys
-import types
 
+from shelpy.parse import parse_lambda
 from shelpy.utils import try_convert
+from shelpy.validate import validate_arg_count
 
 
 def hello_world():
@@ -28,31 +30,21 @@ def _range():
 
 def _map():
     usage = "Usage:\n $ range 5 | map 'x -> x + 10'\n>10\n  11\n  12\n  13\n  14"
-    args = len(sys.argv)
-    if len(sys.argv) != 2:
-        print("You provided " + str(args - 1) + "arguments. map accepts 1 argument\n" + usage,
-              file=sys.stderr, flush=True)
 
-    arg = sys.argv[1]
-
-    if not arg.startswith("lambda"):
-        arg = "lambda " + arg
-        arg = arg.replace("->", ":")
-        try:
-            f = eval(arg)
-        except SyntaxError:
-            print("Argument is not a lambda function: " + sys.argv[1] + "\n" + usage, file=sys.stderr)
-            exit(1)
-
-        if not isinstance(f, types.LambdaType):
-            print("Argument is not a lambda function: " + sys.argv[1] + "\n" + usage, file=sys.stderr)
-            exit(1)
-
-    func = eval(arg)
-
-    if not isinstance(func, types.LambdaType):
-        print("Argument is not a lambda function: " + sys.argv[1] + "\n" + usage, file=sys.stderr)
-        exit(1)
+    validate_arg_count(usage, [2])
+    func = parse_lambda(usage, sys.argv[1])
 
     for item in sys.stdin:
         print(func(item), flush=True)
+
+
+def _filter():
+    usage = "Usage:\n $ range 5 | filter 'x -> x > 0'\n> 1\n  2\n  3\n  4"
+
+    validate_arg_count(usage, [2])
+    func = parse_lambda(usage, sys.argv[1])
+
+    for item in sys.stdin:
+        item = item.removesuffix(os.linesep)
+        if func(item):
+            print(item, flush=True)
