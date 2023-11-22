@@ -22,3 +22,11 @@ def parse_lambda(usage, arg):
         exit(1)
 
     return func
+
+
+def parse_int(arg, err_msg):
+    try:
+        return int(arg)
+    except ValueError:
+        print(err_msg, file=sys.stderr)
+        exit(1)

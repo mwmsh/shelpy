@@ -1,8 +1,7 @@
 import os
 import sys
 
-from shelpy.parse import parse_lambda
-from shelpy.utils import try_convert
+from shelpy.parse import parse_lambda, parse_int
 from shelpy.validate import validate_arg_count
 
 
@@ -12,17 +11,11 @@ def hello_world():
 
 def _range():
     usage = "Usage:\n$ range 1 5\n> " + "1\n  2\n  3\n  4"
-    args = len(sys.argv)
-    if args not in [2, 3]:
-        print("You provided " + str(args - 1) + " arguments. range accepts 1 or 2 arguments\n" + usage,
-              file=sys.stderr, flush=True)
-        exit(1)
 
-    start = 0
-    end = try_convert(sys.argv[1], int, "Argument " + sys.argv[1] + " is not an integer\n" + usage)
-    if args == 3:
-        start = end
-        end = try_convert(sys.argv[2], int, "Argument " + sys.argv[2] + " is not an integer\n" + usage)
+    validate_arg_count(usage, [2, 3])
+
+    args = [sys.argv[1], sys.argv[2]] if len(sys.argv) == 3 else ["0", sys.argv[1]]
+    start, end = [parse_int(arg, "Argument " + arg + " is not an integer\n" + usage) for arg in args]
 
     for i in range(start, end):
         print(i, flush=True)
